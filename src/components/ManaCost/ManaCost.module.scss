@@ -1,0 +1,38 @@
+.manaCost {
+    @apply inline-flex items-center justify-center gap-1;
+}
+
+.mana {
+    @apply inline-flex items-center justify-center;
+
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    padding-top: 2px;
+}
+
+.mana-colorless {
+    @apply bg-gray-500;
+    color: black;
+}
+
+.mana-white {
+    @apply bg-white;
+    color: black;
+}
+.mana-red {
+    @apply bg-red-900;
+    color: white;
+}
+.mana-blue {
+    @apply bg-blue-700;
+    color: white;
+}
+.mana-black {
+    @apply bg-gray-900;
+    color: white;
+}
+.mana-green {
+    @apply bg-green-800;
+    color: white;
+}

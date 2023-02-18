@@ -1,30 +1,36 @@
 import React from 'react'
 import { type CardInfo } from '../../model/CardInfo'
+import { type LoadableValue, Loader } from '../Loader/Loader'
+import { ManaCost, parseManaCost } from '../ManaCost/ManaCost'
+
+export const placeholderImage = 'https://via.placeholder.com/512x512'
 
 interface MagicCardProps {
   card: CardInfo
 
-  imageUrl: string | null
+  imageUrl: LoadableValue<string | null>
 }
 
 export function MagicCard (props: MagicCardProps) {
   const { rarity, name, cost, type, abilities, artist, flavorText, toughness } = props.card
 
   return (
-    <div className="border-8 rounded-lg" style={{ width: 400 }}>
+    <div className="border-8 rounded-lg relative" style={{ width: 400 }}>
       <div className="bg-white shadow-md overflow-hidden">
         <div className="flex justify-between items-center bg-gray-600 text-white px-4 py-2 font-bold">
           <div>{name}</div>
-          <div>{cost}</div>
+          <div>
+            <ManaCost cost={parseManaCost(cost)}></ManaCost>
+          </div>
         </div>
 
         <div>
-          <img src={props.imageUrl ?? 'https://via.placeholder.com/400x290'} style={{
-            objectFit: 'cover',
-            width: 400,
-            height: 290,
-            objectPosition: 'top'
-          }}></img>
+          <Loader value={props.imageUrl} placeholder={placeholderImage}>
+            {imageUrl => <img src={imageUrl} alt={props.card.imageDesc} width={400} height={400} style={{
+              objectFit: 'fill',
+              objectPosition: 'top'
+            }} />}
+          </Loader>
         </div>
 
         <div className="flex justify-between items-center bg-gray-600 text-white px-4 py-2 font-bold">

@@ -11,7 +11,7 @@ export interface CardInfo {
   artist: string
 }
 
-export const emptyCard = {
+export const emptyCard: CardInfo = {
   rarity: '',
   color: 'white',
   name: 'No card',
@@ -22,9 +22,9 @@ export const emptyCard = {
   flavorText: '"Proudly made by a human."',
   toughness: 'X/X',
   imageDesc: '',
-} as const satisfies CardInfo
+}
 
-export const loadingCard = {
+export const loadingCard: CardInfo = {
   rarity: '',
   color: 'white',
   name: 'Generating...',
@@ -35,4 +35,4 @@ export const loadingCard = {
   flavorText: '"Creativity is the essence of magic."',
   toughness: 'X/X',
   imageDesc: '',
-} as const satisfies CardInfo
+}

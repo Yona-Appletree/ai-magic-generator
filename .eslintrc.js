@@ -5,7 +5,7 @@ module.exports = {
     node: true
   },
   extends: [
-    'plugin:react/recommended',
+    'plugin:@next/next/recommended',
     'standard-with-typescript'
   ],
   overrides: [],
