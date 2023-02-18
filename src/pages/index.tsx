@@ -42,7 +42,7 @@ export default function Home () {
             name="cardDesc"
             placeholder="Describe it"
             value={cardPrompt.value ?? ''}
-            onChange={(e) => { setCardPrompt(Promise.resolve(e.target.value)) }}
+            onChange={(e) => { setCardPrompt(Promise.resolve(e.target.value)).finally(() => {}) }}
           />
           <input type="submit" value="Generate card" />
         </form>
