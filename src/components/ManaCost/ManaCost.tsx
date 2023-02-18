@@ -2,10 +2,10 @@ import styles from './ManaCost.module.scss'
 
 export const manaColors = ['colorless', 'white', 'red', 'blue', 'black', 'green']
 export type ManaColor = typeof manaColors[number]
-export type ManaCost = Partial<Record<ManaColor, number>>
+export type ManaCostDef = Partial<Record<ManaColor, number>>
 
-export function parseManaCost (text: string): ManaCost {
-  const accumulator: ManaCost = {}
+export function parseManaCost (text: string): ManaCostDef {
+  const accumulator: ManaCostDef = {}
 
   text.split(',').map(it => it.trim())
     .filter(it => it.length > 0)
@@ -33,15 +33,15 @@ export function ManaColorIcons ({ color, count }: {
     {
       (color === 'colorless')
         ? <div className={styles.mana + ' ' + styles['mana-colorless']}>{count}</div>
-        : Array(count).fill(0).map(() => <div className={styles.mana + ' ' + styles['mana-' + color]}></div>)
+        : Array(count).fill(0).map((_, i) => <div key={i} className={styles.mana + ' ' + styles['mana-' + color]}></div>)
     }
   </>
 }
 
 export function ManaCost ({ cost }: {
-  cost: ManaCost
+  cost: ManaCostDef
 }) {
   return <div className={styles.manaCost}>
-    { manaColors.map(color => <ManaColorIcons color={color} count={cost[color] ?? 0}></ManaColorIcons>) }
+    { manaColors.map(color => <ManaColorIcons key={color} color={color} count={cost[color] ?? 0}></ManaColorIcons>) }
   </div>
 }
