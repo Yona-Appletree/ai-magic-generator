@@ -38,11 +38,17 @@ export function useLoadableState<T> (initialValue: T): [ LoadableValue<T>, (prom
           return setValue({ promise, state: 'loaded', value })
         },
         error => {
+          let errorMessage: string
+
           if (error instanceof Error) {
-            return setValue({ promise, state: 'failed', errorMessage: error.message })
+            errorMessage = error.message
           } else {
-            return setValue({ promise, state: 'failed', errorMessage: String(error) })
+            errorMessage = String(error)
           }
+
+          console.error(error)
+
+          return setValue({ promise, state: 'failed', errorMessage })
         }
       )
     }

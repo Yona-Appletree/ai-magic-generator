@@ -17,16 +17,23 @@
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 16px;
 
   Head {
     grid-column: 1 / span 2;
+  }
+
+  h1 {
+    @apply text-3xl font-bold text-gray-100;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
 .aiTextbox {
     @apply bg-gray-900 text-white p-4 rounded-lg whitespace-pre;
-
 }
+
 
 .main,
 .main input {

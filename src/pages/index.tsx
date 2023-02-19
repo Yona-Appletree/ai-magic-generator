@@ -49,7 +49,7 @@ export default function Home () {
       </Head>
 
       <main className={styles.main}>
-        <h3>Generate magic card</h3>
+        <h1>Generate magic card</h1>
         <form onSubmit={onSubmit}>
 
           <label>Card theme</label>
