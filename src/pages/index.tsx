@@ -59,6 +59,13 @@ export default function Home () {
                  onChange={e => { updatePrompt({ cardTheme: e.target.value }) }}
           />
 
+          <label>Plane</label>
+          <input name="card-theme"
+                 type="text"
+                 value={cardPrompt.plane}
+                 onChange={e => { updatePrompt({ plane: e.target.value }) }}
+          />
+
           <label>Release Year</label>
           <select name="release-year"
                   value={cardPrompt.releaseYear}
