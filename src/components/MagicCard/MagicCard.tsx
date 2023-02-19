@@ -29,9 +29,11 @@ export function MagicCard (props: MagicCardProps) {
 
       <div>
         <Loader value={props.imageUrl} placeholder={placeholderImage}>
-          {imageUrl => <img src={imageUrl} alt={props.card.artDescription} width={400} height={400} style={{
+          {imageUrl => <img src={imageUrl} alt={props.card.artDescription} style={{
             objectFit: 'fill',
-            objectPosition: 'top'
+            objectPosition: 'top',
+            width: 400,
+            height: 290
           }} />}
         </Loader>
       </div>
