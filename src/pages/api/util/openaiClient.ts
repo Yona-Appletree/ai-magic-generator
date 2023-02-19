@@ -9,7 +9,7 @@ export async function aiGenerateText (params: {
   prompt: string
   maxTokens: number
 }): Promise<string | null> {
-  return await openaiClient.createCompletion({
+  const result = await openaiClient.createCompletion({
     model: 'text-davinci-003',
     prompt: params.prompt,
     temperature: 0.6,
@@ -17,4 +17,6 @@ export async function aiGenerateText (params: {
     presence_penalty: 1,
     best_of: 1
   }).then(it => it.data.choices[0].text ?? null)
+
+  return result
 }

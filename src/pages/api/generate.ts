@@ -1,7 +1,15 @@
 import { aiGenerateText, configuration, openaiClient } from './util/openaiClient'
-import { type CardInfo } from '../../model/CardInfo'
+import {
+  cardExamples,
+  type CardGenerationResult,
+  type CardInfo,
+  type CardPrompt,
+  withoutPreamble,
+} from '../../model/CardInfo'
 import { type NextApiRequest, type NextApiResponse } from 'next'
 import { type ErrorApiResponse } from './util/errorApiResponse'
+
+import JSON5 from 'json5'
 
 // =====================================================================================================================
 // Message definitions
@@ -17,45 +25,59 @@ const messageHandlers = {
   /**
    * Generate card info from a given prompt.
    */
-  async generateCard (cardDesc: string) {
-    const outputText = await aiGenerateText({
-      prompt: generatePrompt(cardDesc),
+  async generateCard (userPrompt: CardPrompt) {
+    const promptText = `
+    
+    ${userPrompt.preamble}
+
+${cardExamples.map(example => `\n\nPrompt: ${JSON.stringify(withoutPreamble(example.prompt), null, 2)}\nResult: ${JSON.stringify(example.result, null, 2)}`).join('')}
+
+Prompt: ${JSON.stringify(withoutPreamble(userPrompt), null, 2)}
+Result: `
+
+    const resultText = await aiGenerateText({
+      prompt: promptText,
       maxTokens: 2000,
     }) ?? ''
 
-    const outputFields: Array<readonly [string, string | null]> = outputText
-      .split('\n')
-      .map(it => it.match(/\s*(.*?)\s*:\s*(.*)/))
-      .flatMap(it => it == null ? [] : [[it[1], it[2] ?? null]] as const)
-      .filter(it => it.length)
+    console.info(resultText)
 
-    const field = (name: string) => (outputFields.find(it => it[0].toLowerCase().includes(name))?.[1] ?? '')
-
-    console.info(outputText)
+    const rawResult = JSON5.parse(resultText)
 
     return {
-      rarity: field('rarity'),
-      color: field('color'),
-      name: field('name'),
-      cost: field('cost'),
-      type: field('type'),
-      abilities: field('abilities'),
-      flavorText: field('flavor'),
-      toughness: field('toughness'),
-      imageDesc: field('image'),
-      artist: field('artist'),
-    } satisfies CardInfo
+      userPrompt,
+      promptText,
+      resultText,
+      resultCard: {
+        cardName: rawResult.cardName ?? '',
+        releaseYear: rawResult.releaseYear ?? '',
+        manaCost: rawResult.manaCost ?? '',
+        artDescription: rawResult.artDescription ?? '',
+        cardSupertypes: rawResult.cardSupertypes ?? '',
+        type: rawResult.type ?? '',
+        subtypes: rawResult.subtypes ?? '',
+        rarity: rawResult.rarity ?? '',
+        rulesText: rawResult.rulesText ?? '',
+        reminderText: rawResult.reminderText ?? '',
+        flavorText: rawResult.flavorText ?? '',
+        power: rawResult.power ?? 50,
+        toughness: rawResult.toughness ?? 50,
+        loyalty: rawResult.loyalty ?? '',
+        artistName: rawResult.artistName ?? '',
+        collectorsNumber: rawResult.collectorsNumber ?? 50,
+        cardColors: rawResult.cardColors ?? '',
+        cardBorder: rawResult.cardBorder ?? '',
+      } satisfies CardInfo
+    } satisfies CardGenerationResult
   },
 
   async generateImage (card: CardInfo) {
-    const { color, imageDesc } = card
-
     const imageResponse = await openaiClient.createImage({
       prompt: `
-      An illustration to be used on a ${color} magic the gathering card,
+      An illustration to be used on a ${card.cardColors.join(' and ')} magic the gathering card,
         with some corner vignetting
         with the subject centered and fully visible,
-        matching this description: ${imageDesc}
+        matching this description: ${card.artDescription}
       `,
       n: 1,
       size: '512x512',
@@ -74,51 +96,6 @@ export type MessageResponse<T extends MessageName> = Awaited<ReturnType<typeof m
 export interface MessageRequest<T extends MessageName> {
   name: T
   payload: MessagePayload<T>
-}
-
-function generatePrompt (cardDesc: string): string {
-  return `Describe a magic the gathering card, based on the theme, including rarity, color, name, cost, abilities, flavor text, toughness, image
-
-  Prompt: Legendary black and green creature
-  
-  Rarity: Legendary
-  Color: black, green
-  Name: Ghave, Guru of Spores
-  Cost: 1 colorless, 1 white
-  Type: Legendary Creature — Fungus Shaman
-  Abilities: Ghave, Guru of Spores enters the battlefield with five +1/+1 counters on it.<br>(1 colorless), Remove a +1/+1 counter from a creature you control: Create a 1/1 green Saproling creature token.<br>(1 colorless), Sacrifice a creature: Put a +1/+1 counter on target creature.
-  Flavor Text: 
-  Toughness: 0/0
-  Image: A dark green monster with glowing eyes in a foggy forest
-  Artist: James Paick
-
-  Prompt: Dual color creature
-  
-  Rarity: rare
-  Color: green, blue
-  Name: Nimbus Swimmer
-  Cost: X, 1 green, 1 blue
-  Type: Creature — Leviathan
-  Abilities: Flying<br>Nimbus Swimmer enters the battlefield with X +1/+1 counters on it.
-  Flavor Text: The Simic soon discovered that the sky offered as few constraints on size as the sea.
-  Toughness: 0/0
-  Image: A green sea creature with a wide body, underwater
-  Artist: Howard Lyon
-
-  Prompt: Black creature
-  
-  Rarity: rare
-  Color: black
-  Name: Stronghold Assassin
-  Cost: 1 colorless, 2 black
-  Type: Creature — Zombie Assassin
-  Abilities: (tap), Sacrifice a creature: Destroy target nonblack creature.
-  Flavor Text: The assassin sees only throats and hears only heartbeats.
-  Toughness: 2/1
-  Image: A mutant humanoid with a deformed face and mask hold an eletric staff, another human being tortured with a tube in it's mouth
-  Artist: Matthew D. Wilson
-
-  Prompt: ${cardDesc}`
 }
 
 export default async function (req: NextApiRequest, res: NextApiResponse<MessageResponse<MessageName> | ErrorApiResponse>) {

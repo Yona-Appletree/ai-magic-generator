@@ -13,11 +13,26 @@
   font-weight: bold;
   font-style: normal;
 }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  Head {
+    grid-column: 1 / span 2;
+  }
+}
+
+.aiTextbox {
+    @apply bg-gray-900 text-white p-4 rounded-lg whitespace-pre;
+
+}
+
 .main,
 .main input {
   font-size: 16px;
   line-height: 24px;
-  color: #353740;
+  color: white;
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
 .main {
@@ -30,37 +45,34 @@
   width: 34px;
 }
 .main h3 {
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: bold;
-  color: #202123;
-  margin: 16px 0 40px;
+  @apply text-2xl font-bold text-gray-100;
 }
 .main form {
-  display: flex;
-  flex-direction: column;
-  width: 320px;
-}
-.main input[type="text"] {
-  padding: 12px 16px;
-  border: 1px solid #10a37f;
-  border-radius: 4px;
-  margin-bottom: 24px;
-  outline-color: #10a37f;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 480px;
+  gap: 8px;
+
+  align-items: center;
+  justify-content: center;
+
+  input[type="text"], select {
+    @apply bg-gray-900 text-white p-4 rounded-lg whitespace-pre;
+  }
+
+  input[type="submit"], input[type="button"] {
+    @apply bg-green-700 text-white p-4 rounded-lg whitespace-pre font-bold text-2xl;
+    cursor: pointer;
+    grid-column: 1 / span 2;
+
+    &:hover {
+        @apply bg-green-500;
+    }
+  }
 }
 .main ::placeholder {
   color: #8e8ea0;
   opacity: 1;
-}
-.main input[type="submit"],.main input[type="button"] {
-  padding: 12px 0;
-  color: #fff;
-  background-color: #10a37f;
-  border: none;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-  margin-bottom: 24px;
 }
 .main .result {
   font-weight: bold;

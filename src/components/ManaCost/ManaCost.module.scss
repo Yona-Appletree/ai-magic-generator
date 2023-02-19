@@ -18,21 +18,18 @@
 
 .mana-white {
     @apply bg-white;
-    color: black;
+    @apply text-gray-300;
 }
 .mana-red {
-    @apply bg-red-900;
-    color: white;
+    @apply bg-red-900 text-red-300;
 }
 .mana-blue {
-    @apply bg-blue-700;
-    color: white;
+    @apply bg-blue-700 text-blue-300;
 }
 .mana-black {
-    @apply bg-gray-900;
-    color: white;
+    background: #111;
+    @apply text-gray-300;
 }
 .mana-green {
-    @apply bg-green-800;
-    color: white;
+    @apply bg-green-800 text-green-300;
 }
